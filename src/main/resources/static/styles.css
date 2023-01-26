@@ -1,0 +1,68 @@
+
+.outer-wrapper {
+    width: 60%;
+    margin: 0 auto;
+    font-weight: bold
+}
+
+.header {
+    line-height: 300%;
+    background-color: teal;
+    text-align: center;
+    color: white;
+    margin-bottom: 0
+}
+
+.inner-container {
+    background-color: gainsboro;
+    height: 700px;
+    padding: 40px
+}
+
+.welcome {
+    width: 80%;
+    text-indent: 30px;
+    margin: 0 auto
+}
+
+.list {
+    border: 1px solid darkgray;
+    height: 270px;
+    background-color: white;
+    vertical-align: top;
+    padding: 10px 10px;
+    overflow: auto;
+}
+
+.textbox {
+    height: 30px;
+    width: 220px;
+    padding-left: 10px;
+}
+
+p {
+    margin: 5px 0;
+}
+
+button {
+    width: 240px;
+    background-color: slategray;
+    color: white;
+    font-weight: bold;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+select {
+    width: 240px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+table {
+    text-align: left;
+    width: 100%;
+}

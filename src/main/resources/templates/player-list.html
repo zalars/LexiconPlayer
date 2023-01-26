@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Лексикон</title>
+	<link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+	<div class="outer-wrapper"> <!-- общий контейнер -->
+
+		<h3 class="header">л е к с и к о н</h3> <!-- заголовок "Лексикон" -->
+
+		<div class="inner-container" style="text-align: center"> <!-- внутренний контейнер -->
+			<p>Вот исходное, случайно выбранное слово, из букв<br/>
+				которого составьте столько слов, сколько сможете:</p><br/>
+			<p th:text="${sourceWord}"></p><br/><br/><hr>
+			<table>
+				<tr>
+					<th style="width: 30%">
+						<p><br/>Вводите по одному слову<br/>или несколько через пробел:</p><br/>
+					</th>
+					<th style="width: 40%">
+						<p><br/>Список введенных вами слов<br/>(для сравнения с полным списком):</p><br/>
+					</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td style="vertical-align: top">
+						<form th:action="@{/lexicon/player-list}" method="post" th:value="${anotherWord}">
+							<input name="anotherWord" type="text" class="textbox" autofocus/>
+							<br/><br/>
+							<button type="submit">СОХРАНИТЬ</button>
+
+						</form>
+					</td>
+					<td class="list">
+						<div id="playerList" th:each="word: ${lexicon}"
+						     style="display: inline; font-weight: normal;">
+							<span th:text="${word}"></span>
+						</div>
+					</td>
+					<td></td>
+				</tr>
+			</table>
+			<br/><br/><hr><br/><br/>
+			<div style="text-align: center"> <!-- кнопка перехода к итогам -->
+				<a th:href="@{/lexicon/summary}"><button type="button">ИТОГИ</button></a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

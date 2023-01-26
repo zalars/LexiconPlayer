@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Лексикон</title>
+	<link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+	<div class="outer-wrapper"> <!-- общий контейнер -->
+
+		<h3 class="header">л е к с и к о н</h3> <!-- заголовок "Лексикон" -->
+
+		<div class="inner-container"> <!-- внутренний контейнер -->
+
+			<p>Сколько букв должно быть в исходном слове?<br/>
+				Выберите нужное количество из списка:</p>
+			<br/><br/>
+
+			<form th:action="@{/lexicon/word-length}" method="post" th:value="${wordLength}">
+				<select name="wordLength">
+					<option th:each="i : ${#numbers.sequence(5, 20)}" th:value="${i}" th:text="${i}"></option>
+				</select>
+				<br/><br/>
+				<button type="submit">ВЫБРАТЬ</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
