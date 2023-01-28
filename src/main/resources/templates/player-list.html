@@ -26,15 +26,15 @@
 				</tr>
 				<tr>
 					<td style="vertical-align: top">
-						<form th:action="@{/lexicon/player-list}" method="post" th:value="${anotherWord}">
-							<input name="anotherWord" type="text" class="textbox" autofocus/>
+						<form th:action="@{/lexicon/player-list}" method="post">
+							<input name="wordRow" type="text" class="textbox" autofocus/>
 							<br/><br/>
 							<button type="submit">СОХРАНИТЬ</button>
 
 						</form>
 					</td>
 					<td class="list">
-						<div id="playerList" th:each="word: ${lexicon}"
+						<div id="playerList" th:each="word: ${playerList}"
 						     style="display: inline; font-weight: normal;">
 							<span th:text="${word}"></span>
 						</div>

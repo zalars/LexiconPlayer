@@ -4,20 +4,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import zalars.lexiconplayer.models.Selection;
-import zalars.lexiconplayer.services.Gameplay;
+import zalars.lexiconplayer.services.Selection;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("/lexicon")
 public class PlayController {
 
-    private final Gameplay gameplay;
+    private final Selection selection;
+    private final List<String> playerList;
 
     @Autowired
-    public PlayController(Gameplay gameplay) {
-        this.gameplay = gameplay;
+    public PlayController(Selection selection) {
+        this.selection = selection;
+        this.playerList = new ArrayList<>();
     }
 
     @GetMapping("/home")
@@ -32,38 +35,39 @@ public class PlayController {
 
     @PostMapping("/word-length")
     public String postWordLength(Integer wordLength) {
-        gameplay.generateSelection(wordLength);
+        this.playerList.clear();
+        selection.buildBy(wordLength);
         return "redirect:/lexicon/player-list";
     }
 
     @GetMapping("/player-list")
     public String getPlayerList(Model model) {
-        model.addAttribute("sourceWord", gameplay.readSelection().getSourceWord().toUpperCase());
-        model.addAttribute("lexicon", gameplay.readLexicon());
+        model.addAttribute("sourceWord", selection.getSourceWord().toUpperCase());
+        model.addAttribute("playerList", this.playerList);
         return "player-list";
     }
 
     @PostMapping("/player-list")
-    public String postPlayerList(String anotherWord) {
+    public String postPlayerList(String wordRow) {
         // разбивается на массив, т.к. слова могут добавляться через пробел
-        Arrays.stream(anotherWord.toLowerCase().split(" +")).forEach(gameplay.readLexicon()::add);
+        this.playerList.addAll(Arrays.asList(wordRow.toLowerCase().split(" +")));
         return "redirect:/lexicon/player-list";
     }
 
     @GetMapping("/summary")
     public String getSummary(Model model) {
-        gameplay.reviseLists();
-        Selection selection = gameplay.readSelection();
-        String[] derivedWords = selection.getDerived().keySet().toArray(String[]::new);
+        int allDerivedWordsNumber = selection.getTotalAmount() - 1;  // т.е. за вычетом исходного слова
+        int guessedWordsNumber = selection.utilize(this.playerList);
+        int leftWordsNumber = allDerivedWordsNumber - guessedWordsNumber;
+        double rating = 5.00 * guessedWordsNumber / allDerivedWordsNumber;
+        model.addAttribute("estimation", selection.estimatePlayerBy(rating));
         model.addAttribute("sourceWord", selection.getSourceWord().toUpperCase());
-        model.addAttribute("estimation", gameplay.estimatePlayer());
-        model.addAttribute("lexiconSize", gameplay.readLexicon().size());
-        model.addAttribute("derivedWordsNumber", derivedWords.length);
-        model.addAttribute("lexicon", gameplay.readLexicon());
-        model.addAttribute("derivedWords", derivedWords);
-        model.addAttribute("sourceDefinitions", selection.getSourceDefinitions());
-        model.addAttribute("derivedDefinitions", selection.getDerived().values().toArray(String[]::new));
+        model.addAttribute("sourceDefinition", selection.getSourceDefinition());
+        model.addAttribute("leftDefinitions", selection.getLeftDefinitions());
+        model.addAttribute("leftWordsNumber", leftWordsNumber);
+        model.addAttribute("guessedWordsNumber", guessedWordsNumber);
+        model.addAttribute("guessedWords", selection.getWordListByTag("GUESSED"));
+        model.addAttribute("leftWords", selection.getWordListByTag("LEFT").toArray(String[]::new));
         return "summary";
     }
-    
 }

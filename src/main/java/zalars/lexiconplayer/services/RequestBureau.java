@@ -28,7 +28,7 @@ public class RequestBureau {
                           .build();
     }
 
-    public String requestSelection(int wordLength) {
+    public String requestSelectionBy(int wordLength) {
         try {
             return this.client.sendAsync(createRequest("" + wordLength),
                             HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))

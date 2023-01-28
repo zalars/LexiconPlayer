@@ -7,7 +7,7 @@
 	<script th:inline="javascript">
 		function showDefinitions() {
 			const index = document.getElementById("uList").selectedIndex;
-			const definitions = [[${derivedDefinitions}]];
+			const definitions = [[${leftDefinitions}]];
 			document.getElementById("definitions").innerHTML = definitions[index];
 		}
 	</script>
@@ -19,14 +19,14 @@
 
 		<div class="inner-container" style="text-align: center"> <!-- внутренний контейнер -->
 			<p>Исходное слово: <span th:text="${sourceWord}"></span></p><br/><br/>
-			<p>Ваша общая оценка: <span th:text="${estimation}"></span></p><br/><br/><hr>
+			<p>Ваша оценка: <span th:text="${estimation}"></span></p><br/><br/><hr>
 			<table>
 				<tr>
 					<th style="width: 30%">
-						<p><br/>Ваш список<br>правильных слов (<span th:text="${lexiconSize}"></span>):</p><br/>
+						<p><br/>Ваш список<br>правильных слов (<span th:text="${guessedWordsNumber}"></span>):</p><br/>
 					</th>
 					<th style="width: 30%">
-						<p><br/>Список пропущенных<br>вами слов (<span th:text="${derivedWordsNumber}"></span>):</p><br/>
+						<p><br/>Список пропущенных<br>вами слов (<span th:text="${leftWordsNumber}"></span>):</p><br/>
 					</th>
 					<th style="width: 40%">
 						<p><br/>Значение пропущенных слов<br>(выделите одно в списке слева):</p><br/>
@@ -35,17 +35,17 @@
 				<tr>
 					<td>
 						<select size="17">
-							<option th:each="pWord: ${lexicon}" th:value="${pWord}" th:text="${pWord}"></option>
+							<option th:each="gWord: ${guessedWords}" th:value="${gWord}" th:text="${gWord}"></option>
 						</select>
 					</td>
 					<td>
 						<select id="uList" size="17" th:onchange="showDefinitions()"> <!-- script -->
-							<option th:each="dWord: ${derivedWords}" th:value="${dWord}" th:text="${dWord}"></option>
+							<option th:each="dWord: ${leftWords}" th:value="${dWord}" th:text="${dWord}"></option>
 						</select>
 					</td>
 					<td class="list">
-						<div th:utext="'Исходное слово - ' + ${sourceWord} + ':<br/><br/>' + ${sourceDefinitions}"
-						     id="definitions" style="font-weight: normal;"></div>
+						<div th:utext="'Исходное слово - ' + ${sourceWord} + ':<br/><br/>' + ${sourceDefinition}"
+						     id="definitions" style="font-weight: normal; height: 270px; overflow: auto;"></div>
 					</td>
 				</tr>
 			</table>
