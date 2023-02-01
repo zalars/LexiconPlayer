@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Лексикон</title>
+	<link rel="stylesheet" th:href="@{/styles.css}"/>
+</head>
+<body>
+	<div class="outer-wrapper"> <!-- общий контейнер -->
+
+		<h3 class="header">л е к с и к о н</h3> <!-- заголовок "Лексикон" -->
+
+		<div class="inner-container"> <!-- внутренний контейнер -->
+			<h2 style="text-align: center">--- Увы, возникла ошибка! ---</h2>
+			<br/>
+			<br/>
+			<div style="text-indent: 50px">
+				<p>ПРИЧИНА:</p>
+				<p th:text="${errorCause}"></p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

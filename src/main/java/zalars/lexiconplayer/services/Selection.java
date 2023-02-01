@@ -24,10 +24,14 @@ public class Selection {
         this.records = new HashMap<>();
     }
 
+    public String checkDictionaryAvailability() {
+        return this.bureau.requestBy(0);
+    }
+
     public void buildBy(int wordLength) {
         this.records.clear();
         // records : "sourceWord@definition@@derivedWord@definition@@derivedWord@definition<...>"
-        String[] entries = this.bureau.requestSelectionBy(wordLength).split("@@");
+        String[] entries = this.bureau.requestBy(wordLength).split("@@");
 
         for (int i = 0; i < entries.length; i++) {
             String[] singleRecord = entries[i].split("@");  // [слово, определение]
@@ -60,14 +64,14 @@ public class Selection {
         return result.toArray(String[]::new);
     }
 
-    public List<String> getWordListByTag(String tag) {
-        List<String> resultList = new ArrayList<>();
+    public String[] getWordListBy(String tag) {
+        List<String> result = new ArrayList<>();
         for (String word : this.records.keySet()) {
             if (tag.equals(this.records.get(word)[TAG])) {
-                resultList.add(word);
+                result.add(word);
             }
         }
-        return resultList;
+        return result.toArray(String[]::new);
     }
 
     public String getSourceWord() {

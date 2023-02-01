@@ -24,7 +24,13 @@ public class PlayController {
     }
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model) {
+        String checkResult = this.selection.checkDictionaryAvailability();
+        if (checkResult.startsWith("FAILED")) {
+            String errorCause = checkResult.substring(7);
+            model.addAttribute("errorCause", errorCause);
+            return "error";
+        }
         return "home";
     }
 
@@ -66,8 +72,8 @@ public class PlayController {
         model.addAttribute("leftDefinitions", selection.getLeftDefinitions());
         model.addAttribute("leftWordsNumber", leftWordsNumber);
         model.addAttribute("guessedWordsNumber", guessedWordsNumber);
-        model.addAttribute("guessedWords", selection.getWordListByTag("GUESSED"));
-        model.addAttribute("leftWords", selection.getWordListByTag("LEFT").toArray(String[]::new));
+        model.addAttribute("guessedWords", selection.getWordListBy("GUESSED"));
+        model.addAttribute("leftWords", selection.getWordListBy("LEFT"));
         return "summary";
     }
 }

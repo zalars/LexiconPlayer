@@ -8,7 +8,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -24,17 +23,18 @@ public class RequestBureau {
         return HttpRequest.newBuilder()
                           .uri(new URI("http://localhost:8081/dictionary/" + endPoint))
                           .GET()
-                          .timeout(Duration.ofSeconds(20))
                           .build();
     }
 
-    public String requestSelectionBy(int wordLength) {
+    public String requestBy(int value) {
         try {
-            return this.client.sendAsync(createRequest("" + wordLength),
+            return this.client.sendAsync(createRequest("" + value),
                             HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
                                 .thenApply(HttpResponse::body)
                                 .get();
-        } catch (URISyntaxException | ExecutionException | InterruptedException e) {
+        } catch (ExecutionException e) {
+            return "FAILED сервер словаря недоступен";
+        } catch (URISyntaxException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
