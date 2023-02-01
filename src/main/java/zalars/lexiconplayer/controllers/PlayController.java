@@ -24,18 +24,18 @@ public class PlayController {
     }
 
     @GetMapping("/home")
-    public String home(Model model) {
+    public String home() {
+        return "home";
+    }
+
+    @GetMapping("/word-length")
+    public String getWordLength(Model model) {
         String checkResult = this.selection.checkDictionaryAvailability();
         if (checkResult.startsWith("FAILED")) {
             String errorCause = checkResult.substring(7);
             model.addAttribute("errorCause", errorCause);
             return "error";
         }
-        return "home";
-    }
-
-    @GetMapping("/word-length")
-    public String getWordLength() {
         return "word-length";
     }
 
@@ -48,7 +48,7 @@ public class PlayController {
 
     @GetMapping("/player-list")
     public String getPlayerList(Model model) {
-        model.addAttribute("sourceWord", selection.getSourceWord().toUpperCase());
+        model.addAttribute("sourceWord", selection.getWordsBy("SOURCE"));
         model.addAttribute("playerList", this.playerList);
         return "player-list";
     }
@@ -63,17 +63,17 @@ public class PlayController {
     @GetMapping("/summary")
     public String getSummary(Model model) {
         int allDerivedWordsNumber = selection.getTotalAmount() - 1;  // т.е. за вычетом исходного слова
-        int guessedWordsNumber = selection.utilize(this.playerList);
+        int guessedWordsNumber = selection.markAsGuessedAndGetSize(this.playerList);
         int leftWordsNumber = allDerivedWordsNumber - guessedWordsNumber;
         double rating = 5.00 * guessedWordsNumber / allDerivedWordsNumber;
         model.addAttribute("estimation", selection.estimatePlayerBy(rating));
-        model.addAttribute("sourceWord", selection.getSourceWord().toUpperCase());
-        model.addAttribute("sourceDefinition", selection.getSourceDefinition());
-        model.addAttribute("leftDefinitions", selection.getLeftDefinitions());
+        model.addAttribute("sourceWord", selection.getWordsBy("SOURCE"));
+        model.addAttribute("sourceDefinition", selection.getDefinitionsBy("SOURCE"));
+        model.addAttribute("leftDefinitions", selection.getDefinitionsBy("LEFT"));
         model.addAttribute("leftWordsNumber", leftWordsNumber);
         model.addAttribute("guessedWordsNumber", guessedWordsNumber);
-        model.addAttribute("guessedWords", selection.getWordListBy("GUESSED"));
-        model.addAttribute("leftWords", selection.getWordListBy("LEFT"));
+        model.addAttribute("guessedWords", selection.getWordsBy("GUESSED"));
+        model.addAttribute("leftWords", selection.getWordsBy("LEFT"));
         return "summary";
     }
 }

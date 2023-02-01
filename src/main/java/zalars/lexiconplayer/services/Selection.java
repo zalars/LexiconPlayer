@@ -43,8 +43,9 @@ public class Selection {
     public int getTotalAmount() {
         return this.records.size();
     }
-    public int utilize(List<String> playerList) {  // отмечаются слова, отгаданные игроком,
-        int guessedWordsNumber = 0;                // и возвращается их количество
+
+    public int markAsGuessedAndGetSize(List<String> playerList) {
+        int guessedWordsNumber = 0;
         for (String word : playerList) {
             if (this.records.containsKey(word)) {
                 this.records.get(word)[TAG] = "GUESSED";
@@ -54,17 +55,7 @@ public class Selection {
         return guessedWordsNumber;
     }
 
-    public String[] getLeftDefinitions() {
-        List<String> result = new ArrayList<>();
-        for (String word : this.records.keySet()) {
-            if ("LEFT".equals(this.records.get(word)[TAG])) {
-                result.add(this.records.get(word)[DEFINITION]);
-            }
-        }
-        return result.toArray(String[]::new);
-    }
-
-    public String[] getWordListBy(String tag) {
+    public String[] getWordsBy(String tag) {
         List<String> result = new ArrayList<>();
         for (String word : this.records.keySet()) {
             if (tag.equals(this.records.get(word)[TAG])) {
@@ -74,26 +65,14 @@ public class Selection {
         return result.toArray(String[]::new);
     }
 
-    public String getSourceWord() {
-        String sourceWord = "";
+    public String[] getDefinitionsBy(String tag) {
+        List<String> result = new ArrayList<>();
         for (String word : this.records.keySet()) {
-            if ("SOURCE".equals(this.records.get(word)[TAG])) {
-                sourceWord = word;
-                break;
+            if (tag.equals(this.records.get(word)[TAG])) {
+                result.add(this.records.get(word)[DEFINITION]);
             }
         }
-        return sourceWord;
-    }
-
-    public String getSourceDefinition() {
-        String sourceDefinition = "";
-        for (String[] attributes : this.records.values()) {  // [тэг, определение]
-            if ("SOURCE".equals(attributes[TAG])) {
-                sourceDefinition = attributes[DEFINITION];
-                break;
-            }
-        }
-        return sourceDefinition;
+        return result.toArray(String[]::new);
     }
 
     public String estimatePlayerBy(double rating) {

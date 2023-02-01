@@ -13,7 +13,7 @@
 		<div class="inner-container" style="text-align: center"> <!-- внутренний контейнер -->
 			<p>Вот исходное, случайно выбранное слово, из букв<br/>
 				которого составьте столько слов, сколько сможете:</p><br/>
-			<p th:text="${sourceWord}"></p><br/><br/><hr>
+			<p th:text="${sourceWord[0].toUpperCase()}"></p><br/><br/><hr>
 			<table>
 				<tr>
 					<th style="width: 30%">
