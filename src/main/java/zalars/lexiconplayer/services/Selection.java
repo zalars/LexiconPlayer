@@ -24,27 +24,28 @@ public class Selection {
         this.records = new HashMap<>();
     }
 
-    public String checkDictionaryAvailability() {
-        return this.bureau.requestBy(0);
-    }
-
-    public void buildBy(int wordLength) {
+    // возвращает "статус" отклика на запрос
+    public String buildSelectionBy(int wordLength) {
         this.records.clear();
-        // records : "sourceWord@definition@@derivedWord@definition@@derivedWord@definition<...>"
-        String[] entries = this.bureau.requestBy(wordLength).split("@@");
-
+        String requestResult = this.bureau.sendRequestBy(wordLength);
+        if (requestResult.startsWith("ERROR")) {
+            return requestResult;
+        }
+        // entries => "sourceWord@definition@@derivedWord@definition@@derivedWord@definition<...>"
+        String[] entries = requestResult.split("@@");
         for (int i = 0; i < entries.length; i++) {
             String[] singleRecord = entries[i].split("@");  // [слово, определение]
             String tag = i > 0 ? "LEFT" : "SOURCE";
             this.records.put(singleRecord[0], new String[]{tag, singleRecord[1]});
         }
+        return "OK";
     }
 
     public int getTotalAmount() {
         return this.records.size();
     }
 
-    public int markAsGuessedAndGetSize(List<String> playerList) {
+    public int specifyGuessedBy(List<String> playerList) {
         int guessedWordsNumber = 0;
         for (String word : playerList) {
             if (this.records.containsKey(word)) {

@@ -6,9 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import zalars.lexiconplayer.services.Selection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/lexicon")
@@ -17,7 +15,6 @@ public class PlayController {
     private final Selection selection;
     private final List<String> playerList;
 
-    @Autowired
     public PlayController(Selection selection) {
         this.selection = selection;
         this.playerList = new ArrayList<>();
@@ -29,20 +26,25 @@ public class PlayController {
     }
 
     @GetMapping("/word-length")
-    public String getWordLength(Model model) {
-        String checkResult = this.selection.checkDictionaryAvailability();
-        if (checkResult.startsWith("FAILED")) {
-            String errorCause = checkResult.substring(7);
-            model.addAttribute("errorCause", errorCause);
-            return "error";
-        }
+    public String getWordLength() {
         return "word-length";
     }
 
     @PostMapping("/word-length")
-    public String postWordLength(Integer wordLength) {
+    public String postWordLength(Integer wordLength, Model model) {
         this.playerList.clear();
-        selection.buildBy(wordLength);
+        String responseStatus = this.selection.buildSelectionBy(wordLength);
+        if (responseStatus.startsWith("ERROR")) {
+            Map<String, String> errorCauses = Map.of(
+                    "1", "сервер словаря недоступен",
+                    "2", "неверный интернет-адрес сервера словаря",
+                    "3", "какая-то проблема с файлом словаря (RusVocHtml.txt) - " +
+                            "он должен находиться рядом с jar-файлом сервера, который теперь остановлен"
+            );
+            String errorCode = responseStatus.substring(6);
+            model.addAttribute("errorCause", errorCauses.get(errorCode));
+            return "error";
+        }
         return "redirect:/lexicon/player-list";
     }
 
@@ -63,7 +65,7 @@ public class PlayController {
     @GetMapping("/summary")
     public String getSummary(Model model) {
         int allDerivedWordsNumber = selection.getTotalAmount() - 1;  // т.е. за вычетом исходного слова
-        int guessedWordsNumber = selection.markAsGuessedAndGetSize(this.playerList);
+        int guessedWordsNumber = selection.specifyGuessedBy(this.playerList);
         int leftWordsNumber = allDerivedWordsNumber - guessedWordsNumber;
         double rating = 5.00 * guessedWordsNumber / allDerivedWordsNumber;
         model.addAttribute("estimation", selection.estimatePlayerBy(rating));

@@ -19,22 +19,24 @@ public class RequestBureau {
         this.client = HttpClient.newBuilder().build();
     }
 
-    private HttpRequest createRequest(String endPoint) throws URISyntaxException {
+    private HttpRequest createRequestWith(String endPoint) throws URISyntaxException {
         return HttpRequest.newBuilder()
                           .uri(new URI("http://localhost:8081/dictionary/" + endPoint))
                           .GET()
                           .build();
     }
 
-    public String requestBy(int value) {
+    public String sendRequestBy(int value) {
         try {
-            return this.client.sendAsync(createRequest("" + value),
+            return this.client.sendAsync(createRequestWith("" + value),
                             HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
                                 .thenApply(HttpResponse::body)
                                 .get();
         } catch (ExecutionException e) {
-            return "FAILED сервер словаря недоступен";
-        } catch (URISyntaxException | InterruptedException e) {
+            return "ERROR:1";
+        } catch (URISyntaxException e) {
+            return "ERROR:2";
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
